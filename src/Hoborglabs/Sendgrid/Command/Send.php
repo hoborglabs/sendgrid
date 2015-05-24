@@ -20,6 +20,10 @@ class Send {
 	public function getOptions() {
 		return [
 			[
+				'opt' => [ '-t', '--to' ],
+				'name' => 'to'
+			],
+			[
 				'opt' => [ '-f', '--body-file' ],
 				'name' => 'bodyFile'
 			],
@@ -33,7 +37,7 @@ class Send {
 	protected function createEmail($args) {
 		$email = new Email();
 		$email
-			->addTo('foo@bar.com')
+			->addTo($args['to'])
 			->setFrom($this->config['from'])
 			->setSubject('')
 			->setText($args['body']);

@@ -13,8 +13,8 @@ class SendTests extends \PHPUnit_Framework_TestCase {
 	public function shouldSendEmailFromBodyFile() {
 		$sendGridMock = $this->getSendGridMock();
 		$args = [
-			'-f',
-			__DIR__ . '/../../../fixtures/emailbody'
+			'-t', 'test@test.com',
+			'-f', __DIR__ . '/../../../fixtures/emailbody'
 		];
 
 		$assertEmail = function($email) {
@@ -22,6 +22,29 @@ class SendTests extends \PHPUnit_Framework_TestCase {
 				$email->text,
 				file_get_contents(__DIR__ . '/../../../fixtures/emailbody')
 			);
+
+			return true;
+		};
+
+		$sendGridMock
+			->shouldReceive('send')
+				->with(\Mockery::on($assertEmail))
+				->once();
+
+		$send = new Send([ 'from' => 'test@test.com' ], $sendGridMock);
+		$send->run($args);
+	}
+
+	/** @test */
+	public function shouldAllowToSpecifyToAddress() {
+		$sendGridMock = $this->getSendGridMock();
+		$args = [
+			'-t', 'test@test.com',
+			'-f', __DIR__ . '/../../../fixtures/emailbody'
+		];
+
+		$assertEmail = function($email) {
+			$this->assertEquals($email->to, [ 'test@test.com' ]);
 
 			return true;
 		};

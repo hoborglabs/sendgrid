@@ -16,9 +16,9 @@ phpunit:
 	./vendor/bin/phpunit
 
 phar:
-	rm sendgrid.phar
+	rm -f sendgrid.phar
 	php tasks/build-phar.php
 
 clean:
 	rm -rf vendor
-	rm sendgrid.phar
+	rm -f sendgrid.phar
