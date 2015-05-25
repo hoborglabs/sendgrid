@@ -14,7 +14,7 @@ class SendTests extends \PHPUnit_Framework_TestCase {
 		$sendGridMock = $this->getSendGridMock();
 		$args = [
 			'-t', 'test@test.com',
-			'-f', __DIR__ . '/../../../fixtures/emailbody'
+			'-b', '@' . __DIR__ . '/../../../fixtures/emailbody'
 		];
 
 		$assertEmail = function($email) {
@@ -40,11 +40,34 @@ class SendTests extends \PHPUnit_Framework_TestCase {
 		$sendGridMock = $this->getSendGridMock();
 		$args = [
 			'-t', 'test@test.com',
-			'-f', __DIR__ . '/../../../fixtures/emailbody'
+			'-b', 'email body'
 		];
 
 		$assertEmail = function($email) {
 			$this->assertEquals($email->to, [ 'test@test.com' ]);
+
+			return true;
+		};
+
+		$sendGridMock
+			->shouldReceive('send')
+				->with(\Mockery::on($assertEmail))
+				->once();
+
+		$send = new Send([ 'from' => 'test@test.com' ], $sendGridMock);
+		$send->run($args);
+	}
+
+	/** @test */
+	public function shouldSendEmailToListOfEmailsFromAFile() {
+		$sendGridMock = $this->getSendGridMock();
+		$args = [
+			'-t', '@' . __DIR__ . '/../../../fixtures/addresses',
+			'-b', 'email body'
+		];
+
+		$assertEmail = function($email) {
+			$this->assertEquals($email->to, [ 'test1@test.com', 'test2@test.com' ]);
 
 			return true;
 		};
