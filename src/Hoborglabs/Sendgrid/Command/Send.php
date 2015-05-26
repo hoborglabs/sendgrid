@@ -25,6 +25,11 @@ class Send {
 				'type' => 'array'
 			],
 			[
+				'opt' => [ '-s', '--subject' ],
+				'name' => 'subject',
+				'type' => 'string'
+			],
+			[
 				'opt' => [ '-b', '--body' ],
 				'name' => 'body',
 				'type' => 'string'
@@ -35,7 +40,7 @@ class Send {
 	protected function createEmail($args) {
 		$email = new Email();
 		$email
-			->setSubject('')
+			->setSubject($args['subject'])
 			->setFrom($this->config['from'])
 			->setText($args['body']);
 
