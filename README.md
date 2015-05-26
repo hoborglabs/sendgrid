@@ -17,5 +17,18 @@ password = my_password
 ### Send
 
 ```BASH
-./sendgrid.phar send -t developers@test.com -f /path/to/emailBody
+./sendgrid.phar send --to developers@test.com --body '@/path/to/emailBody'
+```
+
+Combined with some git magic
+
+```BASH
+# Generate list of committers
+git log origin/master..origin/my-branch --format=%ae | sort | uniq > committers-emails
+
+# Generate simple change log
+echo "Changes: \
+" `git log --no-merges origin/master..origin/my-branch --format=" o  %s (%an)"` > changes
+
+./sendgrid.phar send --to '@committers-emails' --body '@changes'
 ```
