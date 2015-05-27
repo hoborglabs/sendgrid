@@ -2,7 +2,13 @@
 
 $phar = new Phar(__DIR__ . '/../sendgrid.phar', 0, 'sendgrid.phar');
 
-$phar->buildFromDirectory(__DIR__ . '/..', '/\/(src\/.*\.php|vendor\/.*\.php|sendgrid.php)/');
+$includes = [
+	'sendgrid\.php',
+	'src\/.*\.php',
+	'vendor\/.*\.php',
+	'vendor\/guzzle\/guzzle\/src\/Guzzle\/Http\/Resources\/cacert.pem',
+];
+$phar->buildFromDirectory(__DIR__ . '/..', '/\/(' . implode('|', $includes) . ')/');
 $phar->setStub("#!/usr/bin/env php
 <?php
 Phar::mapPhar('sendgrid.phar');
